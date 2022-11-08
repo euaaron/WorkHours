@@ -5,13 +5,22 @@ import style from "./Input.module.css";
 interface InputProps {
   id: string;
   label: string;
+  placeholder?: string;
   value: string;
+  type?: "time" | "text";
   onChange: (e: string) => void;
 }
 
-export function Input({ id, label, value, onChange }: InputProps) {
+export function Input({
+  id,
+  label,
+  value,
+  onChange,
+  placeholder = "",
+  type = "time",
+}: InputProps) {
   const [remember, setRemember] = useState(false);
-  
+
   useEffect(() => {
     const _remember = localStorage.getItem(id);
     if (_remember) {
@@ -22,7 +31,7 @@ export function Input({ id, label, value, onChange }: InputProps) {
   useEffect(() => {
     if (remember) {
       localStorage.setItem(id, value);
-    }    
+    }
   }, [value]);
 
   function toggleRemember(check: boolean) {
@@ -38,13 +47,26 @@ export function Input({ id, label, value, onChange }: InputProps) {
     <span className={style.container}>
       <label className={style.label} htmlFor={`input_${id}`}>
         <small>{label}</small>
-        <input
-          type="time"
-          id={`input_${id}`}
-          name={`input_${id}`}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-        />
+        {type === "time" ? (
+          <input
+            type="time"
+            id={`input_${id}`}
+            name={`input_${id}`}
+            value={value}
+            placeholder={placeholder}
+            onChange={(e) => onChange(e.target.value)}
+          />
+        ) : (
+          <input
+            type="text"
+            pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}"            
+            id={`input_${id}`}
+            name={`input_${id}`}
+            placeholder={placeholder}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+          />
+        )}
       </label>
       <label className={style.check} htmlFor={`check_${id}`}>
         <small>Remember?</small>
@@ -52,7 +74,7 @@ export function Input({ id, label, value, onChange }: InputProps) {
           type="checkbox"
           name={`check_${id}`}
           id={`check_${id}`}
-          checked={remember}          
+          checked={remember}
           onChange={() => toggleRemember(!remember)}
         />
       </label>

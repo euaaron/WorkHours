@@ -34,26 +34,32 @@ function App() {
 
   function calculateTotalWorkHours(e: any) {
     e.preventDefault();
+    const hasTotal = totalWorkHours
+      ? totalWorkHours.match(/([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}/)
+      : false;
+    const hasLunch = lunchTime
+      ? lunchTime.match(/([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}/)
+      : false;
     const start = parseDate(checkInTime ? checkInTime : "00:00");
-    const lunch = parseDate(lunchTime ? lunchTime : "00:00");
-    const total = parseDate(totalWorkHours ? totalWorkHours : "00:00");
+    const total = parseDate(hasTotal ? totalWorkHours : "00:00");
+    const lunch = parseDate(hasLunch ? lunchTime : "00:00");
 
-    setCheckoutTime(
-      sumDateTime(start, lunch ? sumDateTime(total, lunch) : total)
-    );
+    setCheckoutTime(sumDateTime(start, sumDateTime(total, lunch)));
   }
 
   return (
     <div className="app">
       <header className="header">
-        <h1>Work Hours Calculator</h1>        
+        <h1>Work Hours Calculator</h1>
         <p>Discover when your work day ends.</p>
       </header>
       <section>
         <form>
           <Input
             id="totalWorkHours"
+            type="text"
             label="Total work hours"
+            placeholder="08:00"
             value={totalWorkHours}
             onChange={setTotalWorkHours}
           />
@@ -65,6 +71,8 @@ function App() {
           />
           <Input
             id="lunchTime"
+            placeholder="01:00"
+            type="text"
             label="How long was your lunch / break?"
             value={lunchTime}
             onChange={setLunchTime}
