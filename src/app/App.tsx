@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { Input } from "@/shared/components/Input/Input";
+import { Time } from "@/shared/types/time";
 import { parseDate, sumDateTime } from "@/shared/utils/TimeUtils";
+import { Input } from "@/shared/components/Input/Input";
+
 import PackageJson from "../../package.json";
 
 import "./App.css";
-import { TimePicker } from "@/shared/components/TimePicker/TimePicker";
-import { Time } from "@/shared/types/time";
 
 function App() {
   const [totalWorkHours, setTotalWorkHours] = useState<string>("");
@@ -43,9 +43,9 @@ function App() {
     const hasLunch = lunchTime
       ? lunchTime.match(/([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}/)
       : false;
-    const start = parseDate(checkInTime ? checkInTime : ("0:00"));
-    const total = parseDate(hasTotal ? totalWorkHours : "0:00");
-    const lunch = parseDate(hasLunch ? lunchTime : "0:00");
+    const start = parseDate(checkInTime ? checkInTime as Time : ("0:00"));
+    const total = parseDate(hasTotal ? totalWorkHours as Time : "0:00");
+    const lunch = parseDate(hasLunch ? lunchTime as Time : "0:00");
 
     setCheckoutTime(sumDateTime(start, sumDateTime(total, lunch)));
   }
